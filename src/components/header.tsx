@@ -19,12 +19,20 @@ const Header: React.FC = () => {
         </h1>
         <nav className="flex items-center space-x-4">
           {!session ? (
+            <>
             <Link
               href="/login"
               className="border py-2 px-4 rounded-md hover:opacity-75 transition duration-300"
             >
               Log In
             </Link>
+            <Link
+            href="/login"
+            className="border py-2 px-4 rounded-md hover:opacity-75 transition duration-300"
+          >
+            Sign Up
+              </Link>
+              </>
           ) : (
             <>
               <button

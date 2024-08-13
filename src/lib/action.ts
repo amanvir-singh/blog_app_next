@@ -89,6 +89,7 @@ export async function updatePost(post: PostType) {
   redirect(`/blog/${post.id}`);
 }
 
+
 export async function deletePost(id: string) {
   try {
     await prisma.post.delete({
@@ -100,4 +101,44 @@ export async function deletePost(id: string) {
   }
   revalidatePath("/");
   redirect("/");
+}
+
+export async function createUser(data: {
+  email: string;
+  name?: string;
+  password: string;
+  role?: string;
+}) {
+  
+  if (!data.email || !data.password) {
+    throw new Error("Email and password are required");
+  }
+
+  try {
+  
+    const existingUser = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existingUser) {
+      throw new Error("User with this email already exists");
+    }
+
+    
+    await prisma.user.create({
+      data: {
+        email: data.email,
+        name: data.name || null,
+        password: data.password, 
+        role: data.role || "user",
+      },
+    });
+
+    revalidatePath("/");
+    redirect("/");
+
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create user");
+  }
 }
